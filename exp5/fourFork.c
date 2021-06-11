@@ -1,4 +1,4 @@
-// Q6
+// Q6  Write a C program with 4 calls to fork() as below and print ”Hello” after that. Explain the output.
 
 
 #include<stdio.h>

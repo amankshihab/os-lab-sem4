@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 # 2 - to find largest of the three
 
 echo "Enter the three numbers : "

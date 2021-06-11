@@ -1,4 +1,4 @@
-// Q2
+// Q2  Write a C program that prints 1...10 in both parent and child process. Explain the output
 
 #include<stdio.h>
 #include<sys/types.h>

@@ -1,5 +1,6 @@
-// Q1
-
+/* Q1  Write a C program to create a new child process and print “I am child” in parent process and “I am
+       Parent” in parent process
+*/
 
 #include<stdio.h>
 #include<sys/types.h>
