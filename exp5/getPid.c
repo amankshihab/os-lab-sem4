@@ -15,10 +15,10 @@ int main() {
         printf("Failed to create process.");
     }
     if(process == 0){
-        printf("Successfully created child, pid is %d. My parents pid is %d.\n", getpid(), getppid());
+        printf("\nSuccessfully created child, pid is %d. My parents pid is %d.\n", getpid(), getppid());
     } 
     else{
-        printf("In parent process, pid is %d.My parents pid is %d.\n", getpid(), getppid());
+        printf("In parent process, pid is %d. My parents pid is %d. My childs pid is %d.", getpid(), getppid(), process);
     }
 
     return 0;
