@@ -1,0 +1,24 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/shm.h>
+#include<string.h>
+
+int main () {
+
+    int i;
+    void *shared_memory;
+    char buffer[100];
+
+    int shmid = shmget((key_t)2345, 1024, 0666);
+
+    printf("\nKey of shared memory is %d\n", shmid);
+
+    shared_memory = shmat(shmid, NULL, 0);
+
+    printf("\nProcess attached at %p.", shared_memory);
+
+    printf("data read from shared memory is : %s\n", (char *)shared_memory);
+
+    return 0;
+}
