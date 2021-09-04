@@ -10,28 +10,30 @@
 #include <string.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
-  if (argc < 2) {
+  if (argc < 2)
+  {
     printf("Too few arguments!");
     return 1;
   }
-  
-  int fd1,fd2;
+
+  int fd1, fd2;
   char rbuf[100];
-  
-  fd1 = open(argv[1],O_RDONLY);
-  fd2 = open(argv[2],O_CREAT|O_WRONLY,S_IRWXU);
-  
-  char wbuf1[]="Start\n";
-  
-  write(fd2,wbuf1,strlen(wbuf1));
-  read(fd1,rbuf,100);
-  write(fd2,rbuf,strlen(rbuf));
-  
-  char wbuf2[]="\nStop";
-  
-  write(fd2,wbuf2,strlen(wbuf2));
+
+  fd1 = open(argv[1], O_RDONLY);
+  fd2 = open(argv[2], O_CREAT | O_WRONLY, S_IRWXU);
+
+  char wbuf1[] = "Start\n";
+
+  write(fd2, wbuf1, strlen(wbuf1));
+  read(fd1, rbuf, 100);
+  write(fd2, rbuf, strlen(rbuf));
+
+  char wbuf2[] = "\nStop";
+
+  write(fd2, wbuf2, strlen(wbuf2));
   close(fd1);
   close(fd2);
 

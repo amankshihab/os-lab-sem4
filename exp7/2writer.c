@@ -1,10 +1,11 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<unistd.h>
-#include<sys/shm.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/shm.h>
+#include <string.h>
 
-int main () {
+int main()
+{
 
     int i;
 
@@ -12,7 +13,7 @@ int main () {
 
     char buffer[100];
 
-    int shmid = shmget((key_t)2345, 1024, 0666|IPC_CREAT);
+    int shmid = shmget((key_t)2345, 1024, 0666 | IPC_CREAT);
 
     printf("\nKey of shared memory is : %d\n", shmid);
 

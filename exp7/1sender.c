@@ -1,11 +1,12 @@
-#include<sys/mman.h>
-#include<sys/stat.h>
-#include<fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <stddef.h>
-#include<stdio.h>
-#include<unistd.h>
+#include <stdio.h>
+#include <unistd.h>
 
-int main() {
+int main()
+{
 
     // creating shared memory region using shm_open
     // name = "ipcshm"

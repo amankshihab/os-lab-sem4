@@ -1,11 +1,11 @@
 // Q6  Write a C program with 4 calls to fork() as below and print ”Hello” after that. Explain the output.
 
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#include<stdio.h>
-#include<sys/types.h>
-#include<unistd.h>
-
-int main() {
+int main()
+{
 
     fork();
     fork();
