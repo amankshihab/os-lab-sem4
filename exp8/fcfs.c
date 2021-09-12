@@ -1,144 +1,225 @@
-// this is an implementation of fcfs scheduling algorithm
-
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
-struct process
+int done_k = 0;
+
+struct processes
 {
-    char process_name[10];
+    char name[5];
     int arrival_time;
     int burst_time;
     int waiting_time;
     int turnaround_time;
-    int status;
-} temp;
+    bool executed;
+};
+struct processes *process[20], temp, *shortest;
 
+// This structure is used to represent
+// processes that have completed execution
 struct done_process
 {
-    char process_name[10];
+    char name[5];
     int starting_time;
     int completion_time;
 };
+struct done_process *done[20];
 
-int main()
+void sortByArrivalTime(int num_process)
 {
 
-    int idle;
-
-    printf("\nEnter the no. of processes:");
-    int num_process;
-    scanf("%d", &num_process);
-
-    struct process processess[num_process];
-    struct done_process done[num_process];
-
-    //reading all processes
-    for (int i = 0; i < num_process; i++)
-    {
-
-        printf("\n\nEnter the name of the process:");
-        scanf("%s", processess[i].process_name);
-
-        printf("Enter the arrival time of %s: ", processess[i].process_name);
-        scanf("%d", &processess[i].arrival_time);
-
-        printf("Enter the burst time of %s: ", processess[i].process_name);
-        scanf("%d", &processess[i].burst_time);
-
-        processess[i].status = 0;
-    }
-
-    // sorting based on arrival time
     for (int i = 0; i < num_process; i++)
     {
 
         for (int j = 0; j < num_process - i - 1; j++)
         {
 
-            if (processess[j].arrival_time > processess[j + 1].arrival_time)
+            if (process[j]->arrival_time > process[j + 1]->arrival_time)
             {
 
-                temp = processess[j];
-                processess[j] = processess[j + 1];
-                processess[j + 1] = temp;
+                temp = *process[j];
+                *process[j] = *process[j + 1];
+                *process[j + 1] = temp;
             }
         }
     }
+}
 
-    idle = 0;
+void averageTimes(int num_process)
+{
 
-    for (int i = 0, k = 0, num = 0; k < num_process;)
-    {
-        if (processess[k].arrival_time <= i && processess[k].status == 0)
-        {
-
-            if (idle == 1)
-            {
-                done[num].completion_time = i;
-                num += 1;
-            }
-
-            strcpy(done[num].process_name, processess[k].process_name);
-
-            done[num].starting_time = i;
-            done[num].completion_time = i + processess[k].burst_time;
-
-            processess[k].waiting_time = done[num].starting_time - processess[k].arrival_time;
-            processess[k].turnaround_time = processess[k].waiting_time + processess[k].burst_time;
-
-            i = done[num].completion_time;
-
-            processess[k].status = 1;
-
-            k += 1;
-            num += 1;
-
-            idle = 0;
-        }
-        else if (idle == 0)
-        {
-
-            strcpy(done[num].process_name, "idle");
-
-            done[num].starting_time = i;
-
-            i += 1;
-
-            idle = 1;
-
-            num_process += 1;
-        }
-        else
-        {
-
-            i += 1;
-        }
-    }
-
-    printf("\nThe Gantt Chart of the process is as follows:\n");
-
-    for (int i = 0; i < (16 * num_process) + 1; i++)
-        printf("-");
-
-    printf("\n");
+    int avgWT = 0, avgTT = 0;
 
     for (int i = 0; i < num_process; i++)
     {
 
-        printf("|\t%s\t", done[i].process_name);
+        avgWT += process[i]->waiting_time;
+    }
+
+    for (int i = 0; i < num_process; i++)
+    {
+
+        avgTT += process[i]->turnaround_time;
+    }
+
+    printf("\nAverage Waiting Time: %f\nAverage Turnaround Time:%f\n", ((float)avgWT / num_process), ((float)avgTT / num_process));
+}
+
+void processTable(int num_process)
+{
+
+    for (int i = 0; i < 105; i++)
+        printf("-");
+
+    printf("\n");
+    printf("| Name | Arrival Time | Burst Time | Waiting Time | Turn Around Time | Starting Time | Completion Time |\n");
+    for (int i = 0; i < 105; i++)
+        printf("-");
+    printf("\n");
+    for (int i = 0; i < num_process; i++)
+    {
+
+        printf("|   %s         %d             %d              %d              %d                %d                 %d        |\n", process[i]->name, process[i]->arrival_time, process[i]->burst_time, process[i]->waiting_time, process[i]->turnaround_time, done[i]->starting_time, done[i]->completion_time);
+    }
+
+    for (int i = 0; i < 105; i++)
+        printf("-");
+}
+
+void ganttChart(int num_process)
+{
+
+    printf("\nThe Gantt Chart of the process is as follows:\n");
+
+    for (int i = 0; i < (16 * done_k) + 1; i++)
+        printf("-");
+
+    printf("\n");
+
+    for (int i = 0; i < done_k; i++)
+    {
+
+        printf("|\t%s\t", done[i]->name);
     }
 
     printf("|");
 
     printf("\n");
 
-    for (int i = 0; i < (16 * num_process) + 1; i++)
+    for (int i = 0; i < (16 * done_k) + 1; i++)
         printf("-");
 
     printf("\n0");
 
+    for (int i = 0; i < done_k; i++)
+        printf(" \t \t%d", done[i]->completion_time);
+}
+
+struct processes *get_process(int i, int num_process)
+{
+
+    for (int j = 0; j < num_process; j++)
+    {
+
+        if (process[j]->arrival_time <= i && process[j]->executed == false)
+        {
+            return process[j];
+        }
+    }
+
+    return NULL;
+}
+
+int main()
+{
+
+    bool idle = false;
+
+    int num_idle = 0;
+
+    printf("Enter the no. of processes:");
+    int num_process;
+    scanf("%d", &num_process);
+
     for (int i = 0; i < num_process; i++)
-        printf(" \t \t%d", done[i].completion_time);
+    {
+
+        process[i] = (struct processes *)malloc(sizeof(struct processes));
+
+        printf("\nEnter the name of the process:");
+        scanf("%s", process[i]->name);
+
+        printf("Enter the arrival time:");
+        scanf("%d", &process[i]->arrival_time);
+
+        printf("Enter the burst time:");
+        scanf("%d", &process[i]->burst_time);
+
+        process[i]->executed = false;
+    }
+
+    sortByArrivalTime(num_process);
+
+    for (int i = 0, j = 0; j < num_process + num_idle; j++)
+    {
+
+        struct processes *p = get_process(i, num_process);
+
+        if (p != NULL)
+        {
+
+            if (idle == true)
+            {
+
+                done[done_k]->completion_time = i;
+
+                idle = false;
+
+                done_k += 1;
+            }
+
+            done[done_k] = (struct done_process *)malloc(sizeof(struct done_process));
+
+            p->executed = true;
+
+            strcpy(done[done_k]->name, p->name);
+            done[done_k]->starting_time = i;
+            done[done_k]->completion_time = i + p->burst_time;
+
+            p->waiting_time = i - p->arrival_time;
+            p->turnaround_time = p->waiting_time + p->burst_time;
+
+            i = done[done_k]->completion_time;
+
+            done_k += 1;
+        }
+        else if (idle == false)
+        {
+
+            idle = true;
+
+            num_idle += 1;
+
+            done[done_k] = (struct done_process *)malloc(sizeof(struct done_process));
+
+            strcpy(done[done_k]->name, "idle");
+            done[done_k]->starting_time = i;
+
+            i += 1;
+        }
+        else
+        {
+            i += 1;
+        }
+    }
+
+    processTable(num_process);
+
+    ganttChart(num_process);
+    printf("\n");
+
+    averageTimes(num_process);
 
     return 0;
 }
