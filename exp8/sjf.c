@@ -1,3 +1,6 @@
+// This a program which prints the times taken by processes
+// when they are scheduled based on shortest job first algorithm
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -8,10 +11,12 @@ int done_k = 0;
 struct processes
 {
     char name[5];
+
     int arrival_time;
     int burst_time;
     int waiting_time;
     int turnaround_time;
+    
     bool executed;
 };
 struct processes *process[20], temp, *shortest;
@@ -26,6 +31,7 @@ struct done_process
 };
 struct done_process *done[20];
 
+// sorts the processes based on their arrival time
 void sortByArrivalTime(int num_process)
 {
 
@@ -46,6 +52,7 @@ void sortByArrivalTime(int num_process)
     }
 }
 
+// prints the average waiting & turnaround times
 void averageTimes(int num_process)
 {
 
@@ -66,6 +73,7 @@ void averageTimes(int num_process)
     printf("\nAverage Waiting Time: %f\nAverage Turnaround Time:%f\n", ((float)avgWT / num_process), ((float)avgTT / num_process));
 }
 
+// prints the table with the process entries
 void processTable(int num_process)
 {
 
@@ -87,6 +95,7 @@ void processTable(int num_process)
         printf("-");
 }
 
+// prints the gantt chart of the process
 void ganttChart(int num_process)
 {
 
@@ -116,6 +125,8 @@ void ganttChart(int num_process)
         printf(" \t \t%d", done[i]->completion_time);
 }
 
+// returns the process to be executes based on 
+// shortest job first criteria
 struct processes *get_process(int i, int num_process)
 {
 

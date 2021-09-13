@@ -1,5 +1,5 @@
-// This is a program which prints the time taken by the processes
-// when they are scheduled based on first come first serve criteria
+// This a program which prints the times taken by processes
+// when they are scheduled based on their priority
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -17,10 +17,11 @@ struct processes
     int burst_time;
     int waiting_time;
     int turnaround_time;
+    int priority;
 
     bool executed;
 };
-struct processes *process[20], temp, *shortest;
+struct processes *process[20], temp, *highestPriority;
 
 // This structure is used to represent
 // processes that have completed execution
@@ -32,7 +33,7 @@ struct done_process
 };
 struct done_process *done[20];
 
-// sorts the processes by arrival time
+// sorts all the process based on it's arrival time
 void sortByArrivalTime(int num_process)
 {
 
@@ -53,7 +54,8 @@ void sortByArrivalTime(int num_process)
     }
 }
 
-// prints the average times
+// prints the average waiting and turnaround time
+// made it as a function to keep main function readable
 void averageTimes(int num_process)
 {
 
@@ -74,7 +76,7 @@ void averageTimes(int num_process)
     printf("\nAverage Waiting Time: %f\nAverage Turnaround Time:%f\n", ((float)avgWT / num_process), ((float)avgTT / num_process));
 }
 
-// prints the process table
+// prints information about all the processes in a table
 void processTable(int num_process)
 {
 
@@ -96,7 +98,7 @@ void processTable(int num_process)
         printf("-");
 }
 
-// prints the gantt chart
+// prints the gantt chart of all the processes
 void ganttChart(int num_process)
 {
 
@@ -126,20 +128,34 @@ void ganttChart(int num_process)
         printf(" \t \t%d", done[i]->completion_time);
 }
 
-// returns the process which came first
+// returns the process of highest priority
 struct processes *get_process(int i, int num_process)
 {
+
+    highestPriority = NULL;
 
     for (int j = 0; j < num_process; j++)
     {
 
         if (process[j]->arrival_time <= i && process[j]->executed == false)
         {
-            return process[j];
+
+            highestPriority = process[j];
+
+            for (int k = 0; k < num_process; k++)
+            {
+
+                if (process[j]->arrival_time == process[k]->arrival_time && process[k]->executed == false)
+                {
+
+                    if (process[k]->priority > process[j]->priority)
+                        highestPriority = process[k];
+                }
+            }
         }
     }
 
-    return NULL;
+    return highestPriority;
 }
 
 int main()
@@ -166,6 +182,9 @@ int main()
 
         printf("Enter the burst time:");
         scanf("%d", &process[i]->burst_time);
+
+        printf("Enter the priority:");
+        scanf("%d", &process[i]->priority);
 
         process[i]->executed = false;
     }
