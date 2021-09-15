@@ -8,6 +8,8 @@
 
 int done_k = 0;
 
+int front = 0, rear = 0;
+
 // represents the processes
 struct processes
 {
@@ -130,13 +132,9 @@ void ganttChart(int num_process)
 struct processes *get_process(int i, int num_process)
 {
 
-    for (int j = 0; j < num_process; j++)
+    if (process[front]->arrival_time <= i)
     {
-
-        if (process[j]->arrival_time <= i && process[j]->executed == false)
-        {
-            return process[j];
-        }
+        return process[front++];
     }
 
     return NULL;
@@ -153,6 +151,8 @@ int main()
     int num_process;
     scanf("%d", &num_process);
 
+    rear = num_process-1;
+
     for (int i = 0; i < num_process; i++)
     {
 
@@ -166,13 +166,13 @@ int main()
 
         printf("Enter the burst time:");
         scanf("%d", &process[i]->burst_time);
-
-        process[i]->executed = false;
     }
 
     sortByArrivalTime(num_process);
 
-    for (int i = 0, j = 0; j < num_process + num_idle;)
+    int i = 0;
+
+    while (front != num_process)
     {
 
         struct processes *p = get_process(i, num_process);
@@ -204,7 +204,6 @@ int main()
             i = done[done_k]->completion_time;
 
             done_k += 1;
-            j += 1;
         }
         else if (idle == false)
         {
@@ -219,8 +218,6 @@ int main()
             done[done_k]->starting_time = i;
 
             i += 1;
-
-            j += 1;
         }
         else
         {
