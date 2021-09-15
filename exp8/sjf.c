@@ -16,7 +16,7 @@ struct processes
     int burst_time;
     int waiting_time;
     int turnaround_time;
-    
+
     bool executed;
 };
 struct processes *process[20], temp, *shortest;
@@ -125,7 +125,7 @@ void ganttChart(int num_process)
         printf(" \t \t%d", done[i]->completion_time);
 }
 
-// returns the process to be executes based on 
+// returns the process to be executes based on
 // shortest job first criteria
 struct processes *get_process(int i, int num_process)
 {
@@ -160,7 +160,6 @@ int main()
 {
 
     bool idle = false;
-
     int num_idle = 0;
 
     printf("Enter the no. of processes:");
@@ -186,9 +185,8 @@ int main()
 
     sortByArrivalTime(num_process);
 
-    for (int i = 0, j = 0; j < num_process + num_idle; j++)
+    for (int i = 0, j = 0; j < num_process + num_idle;)
     {
-
         struct processes *p = get_process(i, num_process);
 
         if (p != NULL)
@@ -218,6 +216,7 @@ int main()
             i = done[done_k]->completion_time;
 
             done_k += 1;
+            j += 1;
         }
         else if (idle == false)
         {
@@ -231,6 +230,7 @@ int main()
             strcpy(done[done_k]->name, "idle");
             done[done_k]->starting_time = i;
 
+            j += 1;
             i += 1;
         }
         else

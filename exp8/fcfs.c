@@ -172,7 +172,7 @@ int main()
 
     sortByArrivalTime(num_process);
 
-    for (int i = 0, j = 0; j < num_process + num_idle; j++)
+    for (int i = 0, j = 0; j < num_process + num_idle;)
     {
 
         struct processes *p = get_process(i, num_process);
@@ -204,6 +204,7 @@ int main()
             i = done[done_k]->completion_time;
 
             done_k += 1;
+            j += 1;
         }
         else if (idle == false)
         {
@@ -218,6 +219,8 @@ int main()
             done[done_k]->starting_time = i;
 
             i += 1;
+
+            j += 1;
         }
         else
         {
