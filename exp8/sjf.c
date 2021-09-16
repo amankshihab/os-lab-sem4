@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+int num_idle = 0;
 int done_k = 0;
 
 struct processes
@@ -85,12 +86,19 @@ void processTable(int num_process)
     for (int i = 0; i < 105; i++)
         printf("-");
     printf("\n");
-    for (int i = 0; i < num_process; i++)
+
+    // int j = 0;
+
+    for (int i = 0, j = 0; i < num_process + num_idle; i++)
     {
 
-        printf("|   %s         %d             %d              %d              %d                %d                 %d        |\n", process[i]->name, process[i]->arrival_time, process[i]->burst_time, process[i]->waiting_time, process[i]->turnaround_time, done[i]->starting_time, done[i]->completion_time);
-    }
+        if (strcmp(done[i]->name, "idle") != 0)
+        {
 
+            printf("|   %s         %d             %d              %d              %d                %d                 %d        |\n", process[j]->name, process[j]->arrival_time, process[j]->burst_time, process[j]->waiting_time, process[j]->turnaround_time, done[i]->starting_time, done[i]->completion_time);
+            j += 1;
+        }
+    }
     for (int i = 0; i < 105; i++)
         printf("-");
 }
@@ -160,7 +168,6 @@ int main()
 {
 
     bool idle = false;
-    int num_idle = 0;
 
     printf("Enter the no. of processes:");
     int num_process;
