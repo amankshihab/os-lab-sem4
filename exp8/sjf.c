@@ -1,6 +1,9 @@
 // This a program which prints the times taken by processes
 // when they are scheduled based on shortest job first algorithm
 
+// in this program it is assumed that highest number has highest priority
+// and lowest number has lowest priority
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
