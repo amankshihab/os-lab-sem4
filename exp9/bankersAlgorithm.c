@@ -11,27 +11,30 @@ struct processes
 
     char name[5];
 
-    int allocation[10]; // initial allocation
-    int max_need[10]; // max amount of resources needed
+    int allocation[10];     // initial allocation
+    int max_need[10];       // max amount of resources needed
     int remaining_need[10]; // remaining amt of resources needed
 
     bool executed;
 };
 struct processes *process[10];
 
-bool isDeadlock(int num_process, int num_resources, int remaining_available[]) {
-
-    bool flag = false;
+bool isDeadlock(int num_process, int num_resources, int remaining_available[], int num_executed)
+{
 
     int num = 0;
 
-    for (int i = 0; i < num_process; i++) {
+    for (int i = 0; i < num_process; i++)
+    {
 
-        if (process[i] -> executed == false) {
+        if (process[i]->executed == false)
+        {
 
-            for (int j = 0; j < num_resources; j++) {
+            for (int j = 0; j < num_resources; j++)
+            {
 
-                if (process[i] -> remaining_need[j] > remaining_available[j]) {
+                if (process[i]->remaining_need[j] > remaining_available[j])
+                {
                     num += 1;
                     break;
                 }
@@ -39,7 +42,7 @@ bool isDeadlock(int num_process, int num_resources, int remaining_available[]) {
         }
     }
 
-    if (num == num_process)
+    if (num == (num_process - num_executed))
         return true;
     return false;
 }
@@ -55,7 +58,8 @@ int main()
 
     int total_allocated[10];
 
-    for (int i = 0; i < num_resources; i++) {
+    for (int i = 0; i < num_resources; i++)
+    {
         total_allocated[i] = 0;
     }
 
@@ -96,7 +100,7 @@ int main()
             printf("\n");
         }
 
-        process[i] -> executed = false;
+        process[i]->executed = false;
     }
 
     for (int i = 0; i < num_resources; i++)
@@ -106,44 +110,50 @@ int main()
 
     int iter_variable = 0;
 
-    bool execute_flag = true;
+    bool execute_flag = true, DEADLOCK = false;
 
     printf("\nSafe sequence:\n");
 
     while (num_executed < num_process)
     {
 
-        if (isDeadlock(num_process, num_resources, remaining_available)){
-            
+        if (isDeadlock(num_process, num_resources, remaining_available, num_executed))
+        {
+
             printf("\nDEADLOCKED!");
             break;
-        }    
+        }
 
-        if (process[iter_variable] -> executed != true) {
+        if (process[iter_variable]->executed != true)
+        {
 
-            for (int k = 0; k < num_resources; k++) {
+            for (int k = 0; k < num_resources; k++)
+            {
 
-                if (process[iter_variable] -> remaining_need[k] > remaining_available[k]) {
+                if (process[iter_variable]->remaining_need[k] > remaining_available[k])
+                {
                     execute_flag = false;
                     break;
                 }
             }
 
-            if (execute_flag) {
+            if (execute_flag)
+            {
 
-                printf("%s ", process[iter_variable] -> name);
+                printf("%s ", process[iter_variable]->name);
 
-                for (int k = 0; k < num_resources; k++) {
+                for (int k = 0; k < num_resources; k++)
+                {
 
-                    remaining_available[k] += process[iter_variable] -> allocation[k];
-                    process[iter_variable] -> executed = true;
+                    remaining_available[k] += process[iter_variable]->allocation[k];
+                    process[iter_variable]->executed = true;
                 }
 
                 num_executed += 1;
             }
         }
 
-        iter_variable = (iter_variable+1)%num_process;
+        iter_variable = (iter_variable + 1) % num_process;
 
         execute_flag = true;
     }
