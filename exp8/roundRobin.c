@@ -22,6 +22,7 @@ struct processes
     int burst_time;
     int waiting_time;
     int turnaround_time;
+    int completion_time; // for convenience
     int rem_burst_time;
 
     bool executed;
@@ -96,7 +97,8 @@ struct processes *get_process(int i)
 {
 
     if (front < num_process)
-    {    if (process[front]->arrival_time <= i)
+    {
+        if (process[front]->arrival_time <= i)
         {
 
             return process[front++];
@@ -106,10 +108,12 @@ struct processes *get_process(int i)
     return NULL;
 }
 
-bool executed() {
+bool executed()
+{
 
-    for (int i = 0; i < num_process; i++) {
-        if (process[i] -> executed == false)
+    for (int i = 0; i < num_process; i++)
+    {
+        if (process[i]->executed == false)
             return true;
     }
 
@@ -173,11 +177,30 @@ void ganttChart()
         printf(" \t \t%d", done[i]->completion_time);
 }
 
+void averageTimes()
+{
+
+    int avgWT = 0, avgTT = 0;
+
+    for (int i = 0; i < num_process; i++)
+    {
+
+        avgWT += process[i]->waiting_time;
+    }
+
+    for (int i = 0; i < num_process; i++)
+    {
+
+        avgTT += process[i]->turnaround_time;
+    }
+
+    printf("\nAverage Waiting Time: %f\nAverage Turnaround Time:%f\n", ((float)avgWT / num_process), ((float)avgTT / num_process));
+}
 
 int main()
 {
 
-    bool idle = false;
+    bool idle = false, signal = false;
 
     printf("\nEnter the time quantum:");
     int time_quantum;
@@ -200,39 +223,34 @@ int main()
         printf("Enter the burst time:");
         scanf("%d", &process[i]->burst_time);
 
-        process[i] -> rem_burst_time = process[i] -> burst_time;
+        process[i]->rem_burst_time = process[i]->burst_time;
     }
 
     int i = 0;
 
-    for (i = 0;;i++)
+    for (int j = 0; j < num_process;)
     {
-        struct processes *p_get = get_process(i);
+        struct processes *p_get = get_process(j);
 
-        if (p_get != NULL) {
+        if (p_get != NULL)
+        {
             enqueueReady(p_get);
-            break;
+
+            j += 1;
         }
     }
     while (executed())
     {
 
-
         struct processes *p_dq = dequeueReady();
-
-        // struct processes *p_get = get_process(i);
-
-        // if (p_get != NULL)
-        // {
-        //     enqueueReady(p_get);
-        // }
 
         if (p_dq != NULL)
         {
 
-            if (idle) {
+            if (idle)
+            {
 
-                done[done_k] -> completion_time = i;
+                done[done_k]->completion_time = i;
 
                 idle = false;
 
@@ -243,7 +261,7 @@ int main()
 
             done[done_k]->starting_time = i;
 
-            strcpy(done[done_k] -> name, p_dq -> name);
+            strcpy(done[done_k]->name, p_dq->name);
 
             if (p_dq->rem_burst_time <= time_quantum)
             {
@@ -253,36 +271,36 @@ int main()
             }
             else
             {
-                done[done_k] -> completion_time = i + time_quantum;
+                done[done_k]->completion_time = i + time_quantum;
 
-                p_dq -> rem_burst_time -= time_quantum;
+                p_dq->rem_burst_time -= time_quantum;
 
-                enqueueReady(p_dq);
+                // enqueueReady(p_dq);
+                signal = true;
             }
+
+            p_dq->completion_time = i;
+
+            p_dq -> turnaround_time = p_dq -> completion_time - p_dq -> arrival_time;
+            p_dq -> waiting_time = p_dq -> turnaround_time - p_dq -> burst_time;
 
             i = done[done_k]->completion_time;
 
             done_k += 1;
-
-            printf("Hey");
         }
         else if (idle == false)
         {
-            done[done_k] = (struct done_process*)malloc(sizeof(struct done_process));
+            done[done_k] = (struct done_process *)malloc(sizeof(struct done_process));
 
-            strcpy(done[done_k] -> name, "idle");
+            strcpy(done[done_k]->name, "idle");
 
-            done[done_k] -> starting_time = i;
+            done[done_k]->starting_time = i;
 
             num_idle += 1;
-
-            printf("Hey1");
         }
         else
         {
             i += 1;
-            printf("Hey1");
-
         }
 
         struct processes *p_get = get_process(i);
@@ -292,11 +310,18 @@ int main()
             enqueueReady(p_get);
         }
 
+        if (signal)
+        {
+            enqueueReady(p_dq);
+            signal = false;
+        }
     }
 
     processTable();
 
     ganttChart();
+
+    averageTimes();
 
     return 0;
 }
