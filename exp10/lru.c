@@ -1,132 +1,96 @@
 #include <stdio.h>
-#include <stdbool.h>
+#include <string.h>
 
-struct Page
+int search(int ar[], int size, int s)
 {
-
-	int page;
-	int index;
-};
-struct Page pages[20], frame[20];
-
-int frameNum;
-
-int pageNum;
-
-int iter_var = 0;
-
-int hitCount = 0, faultCount = 0;
-
-void init()
-{
-
-	for (int i = 0; i < frameNum; i++)
+	int n = 0;
+	for (int i = 0; i < size; i++)
 	{
-
-		frame[i].page = -1;
-		frame[i].index = -1;
-	}
-}
-
-bool check(struct Page pages)
-{
-
-	for (int i = 0; i < pageNum; i++)
-	{
-
-		if (frame[i].page == pages.page)
+		if (ar[i] == s)
 		{
-
-			return true;
+			n = 1;
 		}
 	}
-
-	return false;
+	return n;
 }
 
-void display()
+int framefinder(int fr[], int frames, int pages[], int index)
 {
-
-	printf("\nThe frame now is:\n");
-
-	for (int i = 0; i < frameNum; i++)
+	int find_frame = frames, find_page = index;
+	//printf("\nfind is %d\n",find);
+	for (int i = 0; i < frames; i++)
 	{
-
-		printf("%d ", frame[i].index);
-	}
-}
-
-int lessIndex()
-{
-
-	int min = 0;
-
-	for (int i = 0; i < frameNum; i++)
-	{
-
-		if (frame[i].index <= min)
+		for (int j = index - 1; j >= 0; j--)
 		{
-
-			min = i;
+			if (fr[i] == pages[j]) //removing find >j from if condition
+			{
+				if (find_page > j)
+				{
+					//printf("\nchanging find to %d",i
+					find_page = j;
+					find_frame = i;
+					//printf("\n replacing at %d\n",find);
+				}
+				break;
+			}
 		}
 	}
+	//printf("\nfound at %d\n",find);
+	return find_frame;
 }
 
-void replaceByLRU(struct Page pages)
+void main()
 {
-
-	if (frame[iter_var].page == -1)
+	int pages[20];
+	int size, frames, empty = 0, miss = 0, hit = 0, fr[10], find;
+	printf("Enter no:of pages:");
+	scanf("%d", &size);
+	printf("Enter page string:");
+	for (int i = 0; i < size; i++)
 	{
-
-		frame[iter_var].page = pages.page;
-		iter_var = (iter_var + 1) % frameNum;
+		scanf("%d", &pages[i]);
 	}
-	else
+	printf("\n");
+	printf("Enter no:of frames:");
+	scanf("%d", &frames);
+	for (int i = 0; i < frames; i++)
 	{
-
-		if (check(pages))
+		fr[i] = -1;
+	}
+	for (int i = 0; i < size; i++)
+	{
+		if (search(fr, frames, pages[i]) == 0)
 		{
-
-			hitCount += 1;
-			pages.index += 1;
+			if (empty < frames)
+			{
+				fr[empty] = pages[i];
+				empty++;
+			}
+			else
+			{
+				find = framefinder(fr, frames, pages, i);
+				fr[find] = pages[i];
+			}
+			miss++;
 		}
 		else
 		{
-
-			int index = lessIndex();
-
-			frame[index] = pages;
+			hit++;
 		}
+		//printf("%d-- ",i);
+		for (int j = 0; j < frames; j++)
+		{
+			if (fr[j] == -1)
+			{
+				printf("--  ");
+			}
+			else
+			{
+				printf("%d  ", fr[j]);
+			}
+		}
+		printf("\n");
 	}
-}
-
-int main()
-{
-
-	printf("\nEnter the no. of frames:");
-	scanf("%d", &frameNum);
-
-	init();
-
-	printf("\nEnter the no. of pages:");
-	scanf("%d", &pageNum);
-
-	printf("\nEnter the pages:");
-	for (int i = 0; i < pageNum; i++)
-	{
-
-		scanf("%d", &pages[i].page);
-
-		pages[i].index = 0;
-	}
-
-	for (int i = 0; i < pageNum; i++)
-	{
-
-		replaceByLRU(pages[i]);
-
-		display();
-	}
-
-	return 0;
+	printf("\nMiss=%d\n", miss);
+	printf("Hit=%d\n", hit);
 }
