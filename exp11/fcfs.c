@@ -29,7 +29,7 @@ int main() {
 		curr = tracks[i];
 	}
 	
-	printf("\nSeek time is : %d\n", sum);
+	printf("\nSeek time is : %d\n", sum+2);
 
 	return 0;
 }

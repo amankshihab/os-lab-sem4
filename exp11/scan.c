@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 void main()
 {
 	int cyl[20], size, temp, head, head_index, trav[20], t = 0, seek_time;
