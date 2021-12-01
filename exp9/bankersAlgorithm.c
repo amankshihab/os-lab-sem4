@@ -47,6 +47,37 @@ bool isDeadlock(int num_process, int num_resources, int remaining_available[], i
     return false;
 }
 
+void table(int num_process, int num_resources) {
+
+	printf("\nProcess\t\tAllocation\tMax\t\tNeed");
+	
+	for (int i = 0; i < num_process; i++) {
+	
+		printf("\n%s\t\t", process[i] -> name);
+		
+		for (int j = 0; j < num_resources; j++) {
+		
+			printf("%d ", process[i]->allocation[j]);
+		}
+		
+		printf("\t\t");
+		
+		for (int j = 0; j < num_resources; j++) {
+		
+			printf("%d ", process[i]->max_need[j]);
+		}
+		
+		printf("\t\t");
+		
+		for (int j = 0; j < num_resources; j++) {
+		
+			printf("%d ", process[i]->remaining_need[j]);
+		}
+		
+		printf("\t\t");
+	}
+}
+
 int main()
 {
 
@@ -157,6 +188,10 @@ int main()
 
         execute_flag = true;
     }
+    
+    printf("\n");
+    
+    table(num_process, num_resources);
 
     return 0;
 }
