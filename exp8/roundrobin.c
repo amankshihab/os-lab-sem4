@@ -172,25 +172,7 @@ struct processes *dequeue(int num_process)
 
 struct processes *get_process(int i, int num_process)
 {
-    struct processes *to_return = dequeue(num_process);
-
-    if (to_return != NULL)
-    {
-        return to_return;
-    }
-
-    return NULL;
-}
-
-bool all_executed(int num_process)
-{
-    for (int i = 0; i < num_process; i++)
-    {
-        if (!process[i]->executed)
-            return false;
-    }
-
-    return true;
+    return dequeue(num_process);
 }
 
 int main()
@@ -232,7 +214,7 @@ int main()
 
     struct processes *current = NULL;
 
-    while (!all_executed(num_process))
+    while (n != num_process)
     {
 
         for (int g = 0; g < num_process; g++)
